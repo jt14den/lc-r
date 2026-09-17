@@ -14,15 +14,54 @@ example is ICPSR (OpenAlex ID `I4387153780`); learners pick their own institutio
 
 Fits the 2-half-day workshop format, not the single tight day (per open question #2).
 
+## Frame story: patron consultation
+
+`index.md` already frames two audiences for this lesson — helping patrons with their data
+requests, and the library's own internal workflows. The core books/circulation dataset (ep02-05)
+already models the internal-workflow half. Nothing in `lc-r` currently models the patron-facing
+half, which is the extension's natural gap to fill: bibliometrics is one of the most common real
+reference requests academic libraries field (tenure-file citation profiles, grant-report research
+output, department reviews).
+
+**The scenario:** you're at the reference desk and a patron asks a bibliometrics question — *"how
+has my department's output changed?"* or *"can you help me pull a citation profile for my tenure
+file?"* This episode teaches you to answer that with OpenAlex + R.
+
+- **Instructor demo (institution-level):** ICPSR — framed as a patron researching the history of
+  data archives asking about ICPSR's own publication record. Real tie-in: this mirrors the actual
+  SSDA/DSC institutional-lineage research happening in parallel (Marvick's 1961 Political Behavior
+  Archive → 1962 ICPSR founding membership → 1977 ISSR transfer → 2014 Library MOU).
+- **Learner challenges (institution or author):** OpenAlex has both entity types, and a real
+  reference interview involves figuring out which one actually answers the patron's question.
+  Learners choose:
+  - an **institution/department** they care about (mirrors the ICPSR demo), or
+  - **themselves as an author** (own name or ORCID) — deliberately avoids the privacy awkwardness
+    of profiling a real third-party patron without cause, while still exercising the author-level
+    query path a real patron consultation would need.
+- Translating "how has my department's output changed" into a scoped, fetchable OpenAlex query
+  *is itself the reference-interview skill* this episode is teaching, not just a setup step.
+
+## Design note: cached fixtures, live API optional
+
+Per the modernization audit (`active/LC-R Modernization Audit.md`): a room of 20-30 learners all
+hitting the live OpenAlex API at once during a workshop is a real rate-limit/network risk, and a
+live-API dependency breaks the "lesson works offline" property the rest of `lc-r` has. Plan: ship
+a cached fixture (ICPSR's ~76-work dataset, pre-fetched) as the reliable in-workshop path, with
+the live `oa_fetch()` call available as an optional "try it yourself" add-on for anyone with a
+working connection. Needs deciding before B1 (child-include spike) / B4 (ep02-style activity)
+implementation, not before this outline.
+
 ---
 
 ## objectives (draft)
 
+- Translate a patron's bibliometrics question into a scoped, fetchable OpenAlex query
+  (institution vs. author)
 - Query the OpenAlex API from R using `openalexR`
 - Register a polite-pool email and understand OpenAlex's open, no-auth access model
 - Apply prior data-cleaning skills to nested/list-column API data
 - Reuse `ggplot2` patterns from ep04 on a new dataset
-- Knit a short reproducible bibliometric report
+- Knit a short reproducible bibliometric report a patron could actually use
 
 ## Backward design map
 
@@ -32,19 +71,22 @@ explanatory content:
 
 | Objective | Assessing challenge | Stage |
 |---|---|---|
+| Translate a patron's ask into a scoped query | 1a | Section 1 |
 | Query the API with `openalexR` | 1a, 1b | Section 1 |
 | Understand the open/no-auth access model | 1c | Section 1 |
 | Clean nested/list-column data | 2a, 2b | Section 2 |
 | Reuse `ggplot2` patterns on new data | 3a, 3b | Section 3 |
-| Produce a reproducible report | 4a (capstone) | Section 4 |
+| Produce a report a patron could use | 4a (capstone) | Section 4 |
 
 Fill in solutions/exact code as we go — prompts below are placeholders for you to flesh out
 or replace.
 
 ## questions (draft)
 
+- A patron asks a bibliometrics question — how do I figure out whether that's an institution
+  question or an author question?
 - What is OpenAlex and why would a librarian query it directly instead of via a vendor tool?
-- How do I pull publication data for an institution or topic into R?
+- How do I pull publication data for an institution or author into R?
 - How is API data different from a clean CSV, and how do I tidy it?
 - How do the same visualization and reporting skills from earlier episodes transfer to a new dataset?
 
@@ -52,17 +94,25 @@ or replace.
 
 ## Section 1 — Setup + import (mirrors ep02)
 
+- Open with the frame story: a patron's bibliometrics ask, and the reference-interview question
+  of what they actually need (institution vs. author)
 - Briefly frame OpenAlex: free, no auth, CC0, ~250M works
 - Register polite-pool email (etiquette / rate-limit best practice, echoes ep02's working-directory setup-discipline framing)
 - Instructor live-codes: `oa_fetch(entity = "works", institutions.id = "I4387153780")` for ICPSR
 - Sanity-check result size before proceeding (avoid a learner accidentally pulling a huge institution's full corpus)
 
 **Challenge 1a — find your own ID (warm-up, assesses: querying the API).**
-Search `oa_fetch(entity = "institutions", search = ...)` for an institution or topic you care
-about. Confirm you've got the right one before fetching works.
+Imagine a patron just asked you their bibliometrics question. Decide: does it actually need an
+*institution/department* answer, or an *author* answer (their own record)? Then search
+`oa_fetch(entity = "institutions", search = ...)` or `oa_fetch(entity = "authors", search = ...)`
+accordingly, and confirm you've got the right ID before fetching works. If you're doing the
+author path, using your own name/ORCID keeps this from turning into profiling a real third party.
 - *Common wrong turn:* picking an ambiguous search term that matches the wrong entity (e.g. a
-  university system vs. one campus) — worth calling out explicitly rather than letting learners
-  discover it silently.
+  university system vs. one campus, or an author name collision) — worth calling out explicitly
+  rather than letting learners discover it silently.
+- *Teaching point:* this is a reference-interview skill, not just an API-syntax step — the patron
+  said "my department," but do they mean the institution as a whole, or a specific author's
+  output within it?
 - Solution: _fill in_
 
 **Challenge 1b — fetch and eyeball (assesses: querying the API).**
@@ -73,11 +123,12 @@ benchmark)? If it's huge, how would you narrow it (date range? `works?filter=` o
   (`from_publication_date`, `topics.id`, etc.)
 
 **Challenge 1c — discussion, not code (assesses: understanding the access model).**
-OpenAlex is free, no-auth, CC0. What's different about how you'd treat this data versus a
-vendor tool's (Scopus/Web of Science) export? What can you *do* with OpenAlex data that you
-couldn't do with a vendor export, and what are you giving up?
-- Solution: _fill in_ — this is where the "why a librarian would query this directly" framing
-  from Section 1's intro gets cashed out
+A patron at the desk needs a citation profile by end of day. OpenAlex is free, no-auth, CC0.
+What's different about reaching for this versus a vendor tool's (Scopus/Web of Science) export?
+What can you *do* with OpenAlex data on the spot that you couldn't do with a vendor export
+(licensing/turnaround), and what are you giving up (coverage, curation, dedup quality)?
+- Solution: _fill in_ — this is where the reference-desk framing from the frame story gets
+  cashed out concretely
 
 ## Section 2 — Clean/transform (mirrors ep03)
 
@@ -126,12 +177,13 @@ a real question, not executing a fixed recipe.
 - Reinforces ep05's reproducibility framing (parameterized report, not hand-copied numbers)
 
 **Challenge 4a — capstone (assesses: the whole arc, end to end).**
-Knit a bibliometric snapshot report for your own chosen institution/topic: name, date range,
-total works, the plot you built in Challenge 3, and one sentence summarizing what it shows.
-Swap reports with a neighbor — can they tell what institution/topic it's about and what the
-headline finding is, without you explaining it?
-- *This is the real assessment for the episode* — if this works cold with a neighbor reading
-  it, the objectives were actually met, not just individually checked off.
+Knit the bibliometric snapshot as if you were about to hand it to the patron from the frame
+story: name, date range, total works, the plot you built in Challenge 3, and one sentence
+summarizing what it shows — written for them, not for yourself. Swap reports with a neighbor
+playing the patron — can they tell what it's about and what the headline finding is, without
+you explaining it?
+- *This is the real assessment for the episode* — if a "patron" can read it cold and get their
+  answer, the objectives were actually met, not just individually checked off.
 - Solution: _fill in_
 
 **Wrap-up discussion prompt (not a coding challenge).**
