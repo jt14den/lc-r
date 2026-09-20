@@ -1,0 +1,42 @@
+---
+title: "Bibliometric snapshot"
+format: html
+---
+
+<!-- Fill in each TODO. Aim for 10-15 minutes. -->
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# TODO: point this at your own fetched data, or the cached PKP fixture
+# my_works <- readRDS("data/pkp-works-2026-09-20.rds")
+```
+
+## Who and when
+
+<!-- TODO: name the institution or author, and the retrieval or fixture date -->
+
+This snapshot covers works indexed by OpenAlex as of TODO-DATE.
+
+```{r}
+# TODO: total works and date range, calculated from one row per work
+n_works <- nrow(my_works)
+year_range <- range(my_works$publication_year, na.rm = TRUE)
+```
+
+## What the data shows
+
+```{r}
+# TODO: one clearly labeled plot (reuse your publications-per-year code)
+```
+
+TODO: one or two sentences stating the main finding, written for the patron,
+not for yourself.
+
+## Limitations
+
+TODO: name at least one coverage or interpretation limitation (for example:
+current-year totals may be incomplete, or author/affiliation disambiguation
+can be wrong).
