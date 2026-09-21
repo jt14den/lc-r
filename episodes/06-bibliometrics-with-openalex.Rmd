@@ -33,6 +33,28 @@ library(ggplot2)
 pkp_works <- readRDS("data/pkp-works-2026-09-20.rds")
 ```
 
+## Setup
+
+This episode needs one new package. Install it the same way you installed `tidyverse` back
+in Before We Start:
+
+```{r, eval=FALSE}
+install.packages("openalexR")
+```
+
+`dplyr`, `tidyr`, and `ggplot2` are packages you already installed and used in earlier
+episodes, nothing new there:
+
+```{r, eval=FALSE}
+# Already installed and loaded from earlier episodes:
+# library(dplyr)
+# library(tidyr)
+# library(ggplot2)
+
+# New for this episode:
+library(openalexR)
+```
+
 ## A patron comes to the desk
 
 You're at the reference desk, virtual or in person, and the director of a research center
