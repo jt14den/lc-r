@@ -307,6 +307,18 @@
 </div>
 <!--/div.accordion-flush-->
 
+<div class="accordion accordion-flush" id="accordionFlush8">
+  <div class="accordion-item">
+    <div class="accordion-header" id="flush-heading8">
+        <a href="06-bibliometrics-with-openalex.html">7. Bibliometrics with OpenAlex</a>
+    </div>
+<!--/div.accordion-header-->
+
+  </div>
+<!--/div.accordion-item-->
+</div>
+<!--/div.accordion-flush-->
+
                 </div>
               </div>
             </div>
@@ -442,6 +454,29 @@ input/output using options like <code>#| echo: false</code>.</li>
 produces the final output (HTML, PDF, etc.).</li>
 <li>This workflow saves time and reduces errors when reporting on data
 that changes over time.</li>
+</ul></section><section id="06-bibliometrics-with-openalex"><h2 class="section-heading"><a href="06-bibliometrics-with-openalex.html">Bibliometrics with OpenAlex</a></h2>
+<hr class="half-width">
+<ul>
+<li>OpenAlex works without an account for casual use like this, and
+doesn’t need a personal email or API key for a workshop-scale
+query.</li>
+<li>Deciding whether a patron’s request is an author, an organization
+with its own entry, or a department with no entry of its own is a
+reference-interview skill, not only an API choice.</li>
+<li>API responses often include list-columns.
+<code>tidyr::unnest(..., names_sep = "_")</code> flattens them while
+avoiding name collisions with the outer table.</li>
+<li>Unnesting a list-column multiplies rows, one per nested value, so
+totals should come from the original one-row-per-work table, not the
+unnested one.</li>
+<li>OpenAlex’s current subject field is <code>topics</code>, not the
+older, unmaintained <code>concepts</code> field.</li>
+<li>A verified ORCID confirms you have the right person, but not that
+OpenAlex’s own record for them is clean. Check actual works before
+trusting a count.</li>
+<li>The same <code>ggplot2</code> and reporting skills from earlier
+episodes transfer directly to new, API-sourced data, and any report
+should say plainly what it can’t tell you.</li>
 </ul></section>
 </div>
     </main>
@@ -492,8 +527,8 @@ that changes over time.</li>
   "url": "https://librarycarpentry.github.io/lc-r/instructor/key-points.html",
   "identifier": "https://librarycarpentry.github.io/lc-r/instructor/key-points.html",
   "dateCreated": "2019-05-30",
-  "dateModified": "2026-09-17",
-  "datePublished": "2026-09-17"
+  "dateModified": "2026-09-21",
+  "datePublished": "2026-09-21"
 }
 
   </script><script>
