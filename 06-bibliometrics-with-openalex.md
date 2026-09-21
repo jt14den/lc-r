@@ -26,6 +26,30 @@ source: Rmd
 
 
 
+## Setup
+
+This episode needs one new package. Install it the same way you installed `tidyverse` back
+in Before We Start:
+
+
+``` r
+install.packages("openalexR")
+```
+
+`dplyr`, `tidyr`, and `ggplot2` are packages you already installed and used in earlier
+episodes, nothing new there:
+
+
+``` r
+# Already installed and loaded from earlier episodes:
+# library(dplyr)
+# library(tidyr)
+# library(ggplot2)
+
+# New for this episode:
+library(openalexR)
+```
+
 ## A patron comes to the desk
 
 You're at the reference desk, virtual or in person, and the director of a research center
@@ -469,7 +493,7 @@ pkp_works |>
        title = "Public Knowledge Project publications per year")
 ```
 
-<img src="fig/06-bibliometrics-with-openalex-rendered-unnamed-chunk-16-1.png" alt="Bar chart of Public Knowledge Project publications by year, showing a handful of works per year from 2005 through 2024, then a sharp jump to 20 works in 2025 and 28 in 2026" style="display: block; margin: auto;" />
+<img src="fig/06-bibliometrics-with-openalex-rendered-unnamed-chunk-18-1.png" alt="Bar chart of Public Knowledge Project publications by year, showing a handful of works per year from 2005 through 2024, then a sharp jump to 20 works in 2025 and 28 in 2026" style="display: block; margin: auto;" />
 
 Output stays low and uneven for most of the range, then jumps sharply in the last two years,
 which is worth naming out loud as a real pattern rather than glossing over: it could reflect a
@@ -518,7 +542,7 @@ pkp_topics |>
        title = "PKP's top research fields")
 ```
 
-<img src="fig/06-bibliometrics-with-openalex-rendered-unnamed-chunk-18-1.png" alt="Horizontal bar chart of Public Knowledge Project's top research fields by number of distinct works, led by Computer Science and Decision Sciences" style="display: block; margin: auto;" />
+<img src="fig/06-bibliometrics-with-openalex-rendered-unnamed-chunk-20-1.png" alt="Horizontal bar chart of Public Knowledge Project's top research fields by number of distinct works, led by Computer Science and Decision Sciences" style="display: block; margin: auto;" />
 
 Computer Science and Decision Sciences lead, well ahead of Social Sciences and Arts and
 Humanities.
