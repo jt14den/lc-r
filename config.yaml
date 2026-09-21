@@ -65,6 +65,7 @@ episodes:
 - 03-data-cleaning-and-transformation.Rmd
 - 04-data-viz-ggplot.Rmd
 - 05-reproducible-reports.Rmd
+- 06-bibliometrics-with-openalex.Rmd
 
 # Information for Learners
 learners: 
